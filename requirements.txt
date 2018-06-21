@@ -1,0 +1,7 @@
+beautifulsoup4==4.5.1
+bs4==0.0.1
+html5lib==0.999
+httplib2==0.9.1
+python-telegram-bot==10.0.1
+requests==2.18.4
+tinydb==3.8.1post1
