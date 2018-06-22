@@ -1,9 +1,12 @@
 language: python
 python:
-  - "3.6"
-# command to install dependencies
+- '3.6'
 install:
-  - pip install -r requirements.txt
-# command to run tests
+- pip install -r requirements.txt
 script:
-  - pytest
+- pytest
+deploy:
+  provider: heroku
+  app: whattoreadbot
+  api_key:
+    secure: zEfSILCdYld0sr8ae0Wc0eDdf/Z3Xbcf1mpf/OPHAxOYZ/fapohd/v9t8qFzbqf5xi8RR7IyRcDGLPQH8euBxYkU4A1hc+VeFsXmQBEXDCkxoslYXTcy2Atlds4QBkQEDjXSQ0F1d1CHUt/bG3WEfQGTJjOjErQ7tu8itP4GjsdnGSmdxc7JKY7ZiiNyc2g7aKB1O8wawR8HH/vr0m3HNaM/F1NBffxfPpIwRb2M7fpmFEpK/UZCrE5sfGPUGMMRA4ARubxD3zsKkY2pCiGmr3fcuAeMTy00MPjFR8jeEXqo1BF65O+/AJ5x2+vfS440GSGZgTDGUB+FXvu4zqyV/4zDxlArPdSTgZoDisfMRna2k0kNilLw5KVQ4KgLSAsomL+il64hO/srwF94fvHUKpaiy7auPOE9ohMRenRssZ5DDkxxEhdCAvg9xJDaXcZ4iWOI7i7w4/ak6T7bl5kD4lgKFivTFU0WImbxRdtGDIg9CV08t8LtuGIOSWIkd6HiMc+nR+jeEXyHZulqrSkICHTd2hh7Tz2fd6UPHzehp5ZfPwDNB8Mp8nDIWpGfaHmGrukk/mWHeMF/5P47KEIHjeOIf0Zi1/MXR7y2+Pbo29VEwbvkEXmmfKXSdtZe4NrsXyz9Hew8i1YFaQWlugvcys7yMQ4b/TzK9CoCb4P/Bb4=
