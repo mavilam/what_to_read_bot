@@ -15,9 +15,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
-LCDL_FICTION = 0
-LCDL_NOFICTION = 1
-
 
 keyboard = [[KeyboardButton("Fnac ficcion", callback_data='AF'),
              KeyboardButton("Fnac no ficcion", callback_data='ANF')],
@@ -31,8 +28,8 @@ def get_books_fiction(bot, update):
     logger.info("Books fiction request")
 
     tag = "ficcion"
-    scrappingbooks.result_scrapping_fnac(bot, update, tag)
-    scrappingbooks.result_scrapping_lcdl(bot, update, tag)
+    scrappingbooks.result_scrapping_fnac(tag)
+    scrappingbooks.result_scrapping_lcdl(tag)
 
 
 def get_books_nonfiction(bot, update):
@@ -42,8 +39,8 @@ def get_books_nonfiction(bot, update):
 
     tag = "no ficcion"
     global url_lcdl
-    scrappingbooks.result_scrapping_fnac(bot, update, tag)
-    scrappingbooks.result_scrapping_lcdl(bot, update, tag)
+    scrappingbooks.result_scrapping_fnac(tag)
+    scrappingbooks.result_scrapping_lcdl(tag)
 
 
 def get_user_info(update):
@@ -57,10 +54,6 @@ def get_user_info(update):
 
 
 def reply_method(bot, update):
-    button(bot, update)
-
-
-def button(bot, update):
     query = update.message.text
     user = get_user_info(update)
     logger.info(user)
@@ -111,7 +104,7 @@ def set_up_dispatcher_and_updater(token):
     nonfiction_handler = CommandHandler("getbooksnonfiction", get_books_nonfiction)
     reply_handler = MessageHandler(Filters.text, reply_method)
 
-    dispatcher.add_handler(CallbackQueryHandler(button))
+    dispatcher.add_handler(CallbackQueryHandler(reply_method))
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(fiction_handler)
     dispatcher.add_handler(nonfiction_handler)
@@ -131,7 +124,7 @@ def set_up_dispatcher_and_updater(token):
 
 def main():
     logger.info('I\'m running now!')
-    set_up_dispatcher_and_updater(os.getenv("TELEGRAM_TOKEN"))
+    set_up_dispatcher_and_updater("401365173:AAFDN1SbWG4D_ZZvWvjBcG0rKdf9ZijruxA")
 
 
 if __name__ == '__main__':
