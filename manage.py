@@ -124,7 +124,7 @@ def set_up_dispatcher_and_updater(token):
 
 def main():
     logger.info('I\'m running now!')
-    set_up_dispatcher_and_updater("401365173:AAFDN1SbWG4D_ZZvWvjBcG0rKdf9ZijruxA")
+    set_up_dispatcher_and_updater(os.getenv("TELEGRAM_TOKEN"))
 
 
 if __name__ == '__main__':
