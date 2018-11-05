@@ -99,8 +99,8 @@ def scrapping_laCentral_chart(url, init_text, laCentral_type):
         entry = entries[laCentral_type]
         text = init_text
 
-        titles = entry.find_all('h4', limit=LIMIT)
-        authors = entry.find_all('h5', limit=LIMIT)
+        authors = entry.find_all('h4', limit=LIMIT)
+        titles = entry.find_all('h5', limit=LIMIT)
 
         for i in range(len(authors)):
             text += "\t" + str(i + 1) + " -" + titles[i].find('a').getText() + " por " + authors[i].find('a').getText() + " \n"
