@@ -16,12 +16,9 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
-keyboard = [[KeyboardButton("Fnac ficcion", callback_data='AF'),
-             KeyboardButton("Fnac no ficcion", callback_data='ANF')],
-            [KeyboardButton("Casa del libro ficcion", callback_data='LCDLF'),
-             KeyboardButton("Casa del libro no ficcion", callback_data='LCDLNF')],
-            [KeyboardButton("La central ficcion", callback_data='LCF'),
-             KeyboardButton("La central no ficcion", callback_data='LCF')]]
+types_of_books = ["Más vendidos", "Ficcion y fantasía", "Policiaca/Terror", "Histórica", "Romántica", "Juvenil"]
+
+defaultKeyboard = [[KeyboardButton(types_of_books[i]), KeyboardButton(types_of_books[i + 1])] for i in range(0, len(types_of_books), 2)]
 
 
 def get_books_fiction(bot, update):
@@ -58,33 +55,38 @@ def reply_method(bot, update):
     user = get_user_info(update)
     logger.info(user)
     result = ''
-    if query == 'Fnac ficcion':
-        logger.info("Fnac fiction")
-        result = scrappingbooks.result_scrapping_fnac("ficcion")
-    elif query == 'Fnac no ficcion':
-        logger.info("Fnac non fiction")
-        result = scrappingbooks.result_scrapping_fnac("no ficcion")
-    elif query == 'LCDL ficcion' or query == 'Casa del libro ficcion':
-        logger.info("La casa del libro fiction")
-        result = scrappingbooks.result_scrapping_lcdl("ficcion")
-    elif query == 'LCDL no ficcion' or query == 'Casa del libro no ficcion':
-        logger.info("La casa del libro fiction")
-        result = scrappingbooks.result_scrapping_lcdl("no ficcion")
-    elif query == 'La central ficcion':
-        logger.info("La central ficcion")
-        result = scrappingbooks.result_scrapping_laCentral("ficcion")
-    elif query == 'La central no ficcion':
-        logger.info("La central no ficcion")
-        result = scrappingbooks.result_scrapping_laCentral("no ficcion")
-    else:
-        result = "No te he entendido :("
+    reply_markup = None
+    if "|" in query:
+        vendor_and_type = query.split("|")
+        result = scrappingbooks.scrap_books(vendor_and_type[0], vendor_and_type[1])
+    elif query == "🔙":
+        result = 'Volvemos a atrás ¿Qué tipo de libros quieres?'
+        reply_markup = ReplyKeyboardMarkup(defaultKeyboard)
+    elif query in types_of_books:
+        result = '¿Qué fuente de libros quieres?'
+        reply_markup = ReplyKeyboardMarkup(compose_keyboard(query))
+    elif query not in types_of_books:
+        result = 'Puede que esté en mi última versión o que no hayas pulsado en tipo de libro del teclado 🤔. Prueba otra vez por favor'
+        reply_markup = ReplyKeyboardMarkup(defaultKeyboard)
 
-    reply_markup = ReplyKeyboardMarkup(keyboard)
-    bot.send_message(chat_id=update.message.chat_id, text=result, reply_markup=reply_markup)
+    send_bot_response(bot, update, result, reply_markup)
+
+
+def compose_keyboard(type_of_book):
+    return [[KeyboardButton(f'Fnac|{type_of_book}', callback_data='bestsellers')],
+            [KeyboardButton(f'Casa del libro|{type_of_book}', callback_data='black')],
+            [KeyboardButton("🔙", callback_data='back')]]
+
+
+def send_bot_response(bot, update, text, keyboard):
+    if keyboard == None:
+        bot.send_message(chat_id=update.message.chat_id, text=text)
+    else:
+        bot.send_message(chat_id=update.message.chat_id, text=text, reply_markup=keyboard)
 
 
 def start(bot, update):
-    reply_markup = ReplyKeyboardMarkup(keyboard)
+    reply_markup = ReplyKeyboardMarkup(defaultKeyboard)
 
     update.message.reply_text("Hola! soy WhatToReadBot, vengo a recomendarte que libros leer cada semana!",
                               reply_markup=reply_markup)

@@ -7,14 +7,23 @@ import logging
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
+books_urls = {
+    "Fnac|Más vendidos": "https://www.fnac.es/c19449/No-ficcion",
+    "Fnac|Ficcion y fantasía": "https://www.fnac.es/n2433/Novela-de-Ciencia-Ficcion-y-Fantasy/Libros-mas-vendidos-Ciencia-Ficcion-y-Fantasy",
+    "Fnac|Policiaca/Terror": "https://www.fnac.es/n2386/Novela-policiaca-y-terror/Libros-mas-vendidos-Policiaca-Terror#bl=LINovela-polic%C3%ADaca-y-terrorARBO",
+    "Fnac|Histórica": "https://www.fnac.es/n2427/Novela-historica-y-de-aventuras/Libros-mas-vendidos-novela-historica#bl=LINovela-hist%C3%B3rica-y-de-aventurasARBO",
+    "Fnac|Romántica": "https://www.fnac.es/n110830/Novela-romantica/Destacados#bl=LINovela-rom%C3%A1nticaARBO",
+    "Fnac|Juvenil": "https://www.fnac.es/n105348/Literatura-juvenil/Destacados#bl=LILiteratura-juvenilARBO",
+    "Casa del libro|Más vendidos": "https://www.casadellibro.com/libros-mas-vendidos/20?gclid=Cj0KCQjwz_TMBRD0ARIsADfk7hSKfsQ-Ec1IyAu1AdZBNz994EIF6EAyB6FVaTRgWzdsoNMT9rDw0nMaAvQdEALw_wcB",
+    "Casa del libro|Ficcion y fantasía": "https://www.casadellibro.com/libros/literatura/generos-literarios/narrativa-de-ciencia-ficcion/121004001",
+    "Casa del libro|Policiaca/Terror": "https://www.casadellibro.com/libros/literatura/generos-literarios/narrativa-de-terror/121004003",
+    "Casa del libro|Histórica": "https://www.casadellibro.com/libros/narrativa-historica/125000000",
+    "Casa del libro|Romántica": "https://www.casadellibro.com/libros/romantica-y-erotica/narrativa-romantica/127000000",
+    "Casa del libro|Juvenil": "https://www.casadellibro.com/libros/juvenil/117001014"
+}
 
-url_lcdl = "https://www.casadellibro.com/libros-mas-vendidos/20?gclid=Cj0KCQjwz_TMBRD0ARIsADfk7hSKfsQ-Ec1IyAu1AdZBNz994EIF6EAyB6FVaTRgWzdsoNMT9rDw0nMaAvQdEALw_wcB"
-url_fiction = "https://www.fnac.es/n2433/Novela-de-Ciencia-Ficcion-y-Fantasy/Libros-mas-vendidos-Ciencia-Ficcion-y-Fantasy"
-url_nonfiction = "https://www.fnac.es/c19449/No-ficcion"
+
 url_laCentral = "https://www.lacentral.com/web/masvendidos/"
-
-LCDL_FICTION = 0
-LCDL_NOFICTION = 1
 
 LACENTRAL_FICTION = 1
 LACENTRAL_NOFICTION = 3
@@ -29,12 +38,17 @@ headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:61.0)
 def get_text(arg, vendor):
     return "Aqui estan los libros de " + arg + " mas leidos de la lista de " + vendor + " de esta semana: \n"
 
+def scrap_books(vendor, type):
+    if vendor == "Fnac":
+        return result_scrapping_fnac(type)
+    elif vendor == "Casa del libro":
+        return result_scrapping_lcdl(type)
 
 def result_scrapping_fnac(type_of_book):
     logger.info("Result scrapping fnac")
     text = get_text(type_of_book, "fnac")
 
-    fnac_url = get_fnac_url(type_of_book)
+    fnac_url = books_urls[f'Fnac|{type_of_book}']
 
     result = scrapping_fnac_chart(fnac_url, text) + " \n"
     return checkAndReturnResult(result)
@@ -43,9 +57,9 @@ def result_scrapping_fnac(type_of_book):
 def result_scrapping_lcdl(type_of_book):
     logger.info("Result scrapping lcdl")
     text = get_text(type_of_book, "La casa del libro")
-    lcdl_book_type = lcdl_type(type_of_book)
+    url_lcdl = books_urls[f'Casa del libro|{type_of_book}']
 
-    result = scrapping_lcdl_chart(url_lcdl, text, lcdl_book_type)
+    result = scrapping_lcdl_chart(url_lcdl, text)
     return checkAndReturnResult(result)
 
 
@@ -77,7 +91,7 @@ def scrapping_fnac_chart(url, init_text):
             title_str = title.strip(' \t\n\r')
 
             text += "\t" + str(i + 1) + " -" + title_str
-            if(author != None):
+            if author != None:
                 author_str = author.getText().strip(' \t\n\r')
                 text += " por " + author_str + " \n"
             else:
@@ -111,7 +125,7 @@ def scrapping_laCentral_chart(url, init_text, laCentral_type):
         return None
 
 
-def scrapping_lcdl_chart(url, init_text, fiction_or_not):
+def scrapping_lcdl_chart(url, init_text):
     req = requests.get(url, headers=headers)
 
     status_code = req.status_code
@@ -121,7 +135,7 @@ def scrapping_lcdl_chart(url, init_text, fiction_or_not):
         entries = html.find_all('div', {'class': 'carousel-inner'})
 
         text = init_text
-        entry = entries[fiction_or_not]
+        entry = entries[len(entries) - 1]
         titles = entry.find_all('a', {'class': 'title-link'}, limit=LIMIT)
         authors = entry.find_all('a', {'class': 'book-header-2-subtitle-author'}, limit=LIMIT)
 
@@ -132,26 +146,6 @@ def scrapping_lcdl_chart(url, init_text, fiction_or_not):
     else:
         logger.error("Status Code %d" % status_code)
         return None
-
-
-def lcdl_type(type_of_book):
-    if type_of_book == "ficcion":
-        return LCDL_FICTION
-    else:
-        return LCDL_NOFICTION
-
-def laCentral_type(type_of_book):
-    if type_of_book == "ficcion":
-        return LACENTRAL_FICTION
-    else:
-        return LACENTRAL_NOFICTION
-
-
-def get_fnac_url(type_of_book):
-    if type_of_book == "ficcion":
-        return url_fiction
-    else:
-        return url_nonfiction
 
 
 def checkAndReturnResult(result):
