@@ -75,6 +75,7 @@ def reply_method(bot, update):
 def compose_keyboard(type_of_book):
     return [[KeyboardButton(f'Fnac|{type_of_book}', callback_data='bestsellers')],
             [KeyboardButton(f'Casa del libro|{type_of_book}', callback_data='black')],
+            [KeyboardButton(f'La Central|{type_of_book}', callback_data='black')],
             [KeyboardButton("🔙", callback_data='back')]]
 
 

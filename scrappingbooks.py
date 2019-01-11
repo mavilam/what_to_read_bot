@@ -3,6 +3,7 @@
 from bs4 import BeautifulSoup
 import requests
 import logging
+import re
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -19,7 +20,13 @@ books_urls = {
     "Casa del libro|Policiaca/Terror": "https://www.casadellibro.com/libros/literatura/generos-literarios/narrativa-de-terror/121004003",
     "Casa del libro|Histórica": "https://www.casadellibro.com/libros/narrativa-historica/125000000",
     "Casa del libro|Romántica": "https://www.casadellibro.com/libros/romantica-y-erotica/narrativa-romantica/127000000",
-    "Casa del libro|Juvenil": "https://www.casadellibro.com/libros/juvenil/117001014"
+    "Casa del libro|Juvenil": "https://www.casadellibro.com/libros/juvenil/117001014",
+    "La Central|Más vendidos": "https://www.lacentral.com/materias/?novedades=LGB",
+    "La Central|Ficcion y fantasía": "https://www.lacentral.com/materias/?novedades=LGF",
+    "La Central|Policiaca/Terror": "https://www.lacentral.com/materias/?novedades=LGN",
+    "La Central|Histórica": "https://www.lacentral.com/materias/?novedades=LGH",
+    "La Central|Romántica": "https://www.lacentral.com/materias/?novedades=LGE",
+    "La Central|Juvenil": "https://www.lacentral.com/web/materias/?novedades=UJ"
 }
 
 
@@ -43,6 +50,8 @@ def scrap_books(vendor, type):
         return result_scrapping_fnac(type)
     elif vendor == "Casa del libro":
         return result_scrapping_lcdl(type)
+    elif vendor == "La Central":
+        return result_scrapping_laCentral(type)
 
 def result_scrapping_fnac(type_of_book):
     logger.info("Result scrapping fnac")
@@ -67,9 +76,9 @@ def result_scrapping_laCentral(type_of_book):
     logger.info("Result scrapping laCentral")
     text = get_text(type_of_book, "La Central")
 
-    laCentral_book_type = laCentral_type(type_of_book)
+    url_laCentral = books_urls[f'La Central|{type_of_book}']
 
-    result = scrapping_laCentral_chart(url_laCentral, text, laCentral_book_type)
+    result = scrapping_laCentral_chart(url_laCentral, text)
     return checkAndReturnResult(result)
 
 
@@ -103,21 +112,24 @@ def scrapping_fnac_chart(url, init_text):
         return None
 
 
-def scrapping_laCentral_chart(url, init_text, laCentral_type):
+def scrapping_laCentral_chart(url, init_text):
     req = requests.get(url, headers=headers)
     status_code = req.status_code
     if status_code == 200:
         html = BeautifulSoup(req.text, "html.parser")
 
-        entries = html.find_all('div', {'class': 'highlightBlack'})
-        entry = entries[laCentral_type]
+        ul = html.find_all('ul', {'class': 'resultList'})
+        entry = ul[0]
         text = init_text
 
-        authors = entry.find_all('h4', limit=LIMIT)
-        titles = entry.find_all('h5', limit=LIMIT)
+        books = entry.find_all('div', {'class': 'content'}, limit=LIMIT)
+        #print(authors)
 
-        for i in range(len(authors)):
-            text += "\t" + str(i + 1) + " -" + titles[i].find('a').getText() + " por " + authors[i].find('a').getText() + " \n"
+        for i, book in enumerate(books):
+            author = book.find_all('a', limit=1)[0].getText()
+            title_html = str(book.find_all('span', limit=1)[0])
+            title_str = re.sub(r'<(|/)span>', '', title_html)
+            text += "\t" + str(i + 1) + " -" + title_str + " por " + author + " \n"
 
         return text
     else:
