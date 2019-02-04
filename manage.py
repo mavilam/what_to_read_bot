@@ -117,7 +117,7 @@ def set_up_dispatcher_and_updater(token):
     # log all errors
     dispatcher.add_error_handler(error)
 
-    updater.start_webhook(listen="https://whattoreadbot.herokuapp.com/", port=PORT, url_path=token)
+    updater.start_webhook(listen="127.0.0.1", port=PORT, url_path=token)
     updater.bot.set_webhook("https://whattoreadbot.herokuapp.com/" + token)
 
     # Block until you press Ctrl-C or the process receives SIGINT, SIGTERM or
