@@ -99,6 +99,7 @@ def error(bot, update, errormsg):
 
 def set_up_dispatcher_and_updater(token):
     updater = Updater(token=token)
+    PORT = int(os.environ.get('PORT', '8443'))
 
     dispatcher = updater.dispatcher
 
@@ -116,8 +117,8 @@ def set_up_dispatcher_and_updater(token):
     # log all errors
     dispatcher.add_error_handler(error)
 
-    # Start the Bot
-    updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=token)
+    updater.bot.set_webhook("https://whattoreadbot.herokuapp.com/" + token)
 
     # Block until you press Ctrl-C or the process receives SIGINT, SIGTERM or
     # SIGABRT. This should be used most of the time, since start_polling() is
