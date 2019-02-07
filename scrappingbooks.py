@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import requests
 import logging
 import re
+import json
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
