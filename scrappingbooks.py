@@ -67,29 +67,30 @@ def scrapping_fnac_chart(url, init_text):
     status_code = req.status_code
     if status_code == 200:
         html = BeautifulSoup(req.text, "html.parser")
-
-        entradas = html.find_all('li', {'class': 'clearfix Article-item js-ProductList'}, limit=LIMIT)
-
+        entries = html.find_all('li', {'class': 'clearfix Article-item js-ProductList'}, limit=LIMIT)
         text = init_text
 
-        for i, entrada in enumerate(entradas):
-            title = entrada.find('a', {'class': ' js-minifa-title'}).getText()
-            author = entrada.find('p', {'class': 'Article-descSub'}).find('a')
-
-            title_str = title.strip(' \t\n\r')
-
-            text += "\t" + str(i + 1) + " -" + title_str
-            if author != None:
-                author_str = author.getText().strip(' \t\n\r')
-                text += " por " + author_str + " \n"
-            else:
-                text += " \n"
+        for i, entry in enumerate(entries):
+            text = compose_fnac_text(entry, text, str(i + 1))
 
         return text
     else:
         logger.error("Status Code %d" % status_code)
         return None
 
+def compose_fnac_text(entry, prev_text, number_of_book):
+    title = entry.find('a', {'class': ' js-minifa-title'}).getText()
+    author = entry.find('p', {'class': 'Article-descSub'}).find('a')
+
+    title_str = title.strip(' \t\n\r')
+
+    text = f'{prev_text} \t {number_of_book} - {title}'
+    if author != None:
+        author_str = author.getText().strip(' \t\n\r')
+        text = f'{text} por {author_str} \n'
+    else:
+        text = f'{text} \n'
+    return text
 
 def scrapping_laCentral_chart(url, init_text):
     req = requests.get(url, headers=headers)
@@ -102,18 +103,20 @@ def scrapping_laCentral_chart(url, init_text):
         text = init_text
 
         books = entry.find_all('div', {'class': 'content'}, limit=LIMIT)
-        #print(authors)
 
         for i, book in enumerate(books):
-            author = book.find_all('a', limit=1)[0].getText()
-            title_html = str(book.find_all('span', limit=1)[0])
-            title_str = re.sub(r'<(|/)span>', '', title_html)
-            text += "\t" + str(i + 1) + " -" + title_str + " por " + author + " \n"
+            text = compose_laCentral_text(book, text, str(i + 1))
 
         return text
     else:
         logger.error("Status Code %d" % status_code)
         return None
+
+def compose_laCentral_text(book, prev_text, number_of_book):
+    author = book.a.getText()
+    title_html = str(book.span)
+    title_str = re.sub(r'<(|/)span>', '', title_html)
+    return f'{prev_text} \t {number_of_book} - {title_str} por {author} \n'
 
 
 def scrapping_lcdl_chart(url, init_text):
@@ -123,21 +126,25 @@ def scrapping_lcdl_chart(url, init_text):
     if status_code == 200:
         html = BeautifulSoup(req.text, "html.parser")
 
-        entries = html.find_all('div', {'class': 'carousel-inner'})
+        entries = html.find_all('div', {'class': 'product__info'}, limit=LIMIT)
 
         text = init_text
-        entry = entries[len(entries) - 1]
-        titles = entry.find_all('a', {'class': 'title-link'}, limit=LIMIT)
-        authors = entry.find_all('a', {'class': 'book-header-2-subtitle-author'}, limit=LIMIT)
 
-        for i in range(len(authors)):
-            text += "\t" + str(i + 1) + " -" + titles[i].getText().lower().title() + " por " + authors[i].getText().lower().title() + " \n"
+        for i in range(len(entries)):
+            text = compose_lcld_text(entries[i], text, str(i + 1))
 
         return text
     else:
         logger.error("Status Code %d" % status_code)
         return None
 
+def compose_lcld_text(entry, prev_text, number_of_book):
+    title = entry.a.getText().lower().title()
+    if entry.div.a is not None:
+        author = entry.div.a
+    else:
+        author = entry.div.span
+    return f'{prev_text} \t {number_of_book} -{title} por {author.getText().lower().title()}\n'
 
 def checkAndReturnResult(result):
     if result is None:

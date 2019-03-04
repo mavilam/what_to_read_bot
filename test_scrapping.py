@@ -14,15 +14,18 @@ with open('./static/book_sources.json') as json_data:
 class Scrapping(unittest.TestCase):
 
     def test_urls_are_up(self):
-        print(books_urls)
         for key, value in books_urls.items():
-            self.assertEqual(self.request_url(value), 200)
+            http_code = self.request_url(value)
+            if http_code != 200:
+                print(value)
+            self.assertEqual(http_code, 200)
 
     def test_laCasaDelLibro_same_structure(self):
-        entries = self.get_entries(books_urls['Casa del libro|Más vendidos'], 'div', 'class', 'carousel-inner')
+        entries = self.get_entries(books_urls['Casa del libro|Juvenil'], 'div', 'class', 'product__info')
+        self.assertTrue(len(entries) > 0)
         entry = entries[0]
-        titles = entry.find_all('a', {'class': 'title-link'}, limit=5)
-        self.assertTrue(len(titles) > 0)
+        title = entry.a
+        self.assertTrue(title is not None)
 
     def test_Fnac_same_structure(self):
         entries = self.get_entries(books_urls['Fnac|Más vendidos'], 'li', 'class', 'clearfix Article-item js-ProductList')
