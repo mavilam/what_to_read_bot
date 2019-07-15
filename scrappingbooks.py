@@ -24,6 +24,7 @@ headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:61.0)
 def get_text(arg, vendor):
     return "Aqui estan los libros de " + arg + " mas leidos de la lista de " + vendor + " de esta semana: \n"
 
+
 def scrap_books(vendor, type):
     if vendor == "Fnac":
         return result_scrapping_fnac(type)
@@ -32,6 +33,7 @@ def scrap_books(vendor, type):
     elif vendor == "La Central":
         return result_scrapping_laCentral(type)
 
+
 def result_scrapping_fnac(type_of_book):
     logger.info("Result scrapping fnac")
     text = get_text(type_of_book, "fnac")
@@ -39,7 +41,7 @@ def result_scrapping_fnac(type_of_book):
     fnac_url = books_urls[f'Fnac|{type_of_book}']
 
     result = scrapping_fnac_chart(fnac_url, text) + " \n"
-    return checkAndReturnResult(result)
+    return check_and_return_result(result)
 
 
 def result_scrapping_lcdl(type_of_book):
@@ -48,7 +50,7 @@ def result_scrapping_lcdl(type_of_book):
     url_lcdl = books_urls[f'Casa del libro|{type_of_book}']
 
     result = scrapping_lcdl_chart(url_lcdl, text)
-    return checkAndReturnResult(result)
+    return check_and_return_result(result)
 
 
 def result_scrapping_laCentral(type_of_book):
@@ -58,7 +60,7 @@ def result_scrapping_laCentral(type_of_book):
     url_laCentral = books_urls[f'La Central|{type_of_book}']
 
     result = scrapping_laCentral_chart(url_laCentral, text)
-    return checkAndReturnResult(result)
+    return check_and_return_result(result)
 
 
 def scrapping_fnac_chart(url, init_text):
@@ -67,7 +69,7 @@ def scrapping_fnac_chart(url, init_text):
     status_code = req.status_code
     if status_code == 200:
         html = BeautifulSoup(req.text, "html.parser")
-        entries = html.find_all('li', {'class': 'clearfix Article-item js-ProductList'}, limit=LIMIT)
+        entries = html.find_all('li', {'class': 'clearfix Article-item js-Search-hashLinkId'}, limit=LIMIT)
         text = init_text
 
         for i, entry in enumerate(entries):
@@ -78,8 +80,9 @@ def scrapping_fnac_chart(url, init_text):
         logger.error("Status Code %d" % status_code)
         return None
 
+
 def compose_fnac_text(entry, prev_text, number_of_book):
-    title = entry.find('a', {'class': ' js-minifa-title'}).getText()
+    title = entry.find('a', {'class': ' Article-title js-minifa-title js-Search-hashLink'}).getText()
     author = entry.find('p', {'class': 'Article-descSub'}).find('a')
 
     title_str = title.strip(' \t\n\r')
@@ -91,6 +94,7 @@ def compose_fnac_text(entry, prev_text, number_of_book):
     else:
         text = f'{text} \n'
     return text
+
 
 def scrapping_laCentral_chart(url, init_text):
     req = requests.get(url, headers=headers)
@@ -111,6 +115,7 @@ def scrapping_laCentral_chart(url, init_text):
     else:
         logger.error("Status Code %d" % status_code)
         return None
+
 
 def compose_laCentral_text(book, prev_text, number_of_book):
     author = book.a.getText()
@@ -138,15 +143,18 @@ def scrapping_lcdl_chart(url, init_text):
         logger.error("Status Code %d" % status_code)
         return None
 
+
 def compose_lcld_text(entry, prev_text, number_of_book):
     title = entry.a.getText().lower().title()
     if entry.div.a is not None:
-        author = entry.div.a
+        author_raw = entry.div.a
     else:
-        author = entry.div.span
-    return f'{prev_text} \t {number_of_book} -{title} por {author.getText().lower().title()}\n'
+        author_raw = entry.div.span
+    author = author_raw.getText().strip(' \t\n\r')
+    return f'{prev_text} \t {number_of_book} -{title} por {author.title()}'
 
-def checkAndReturnResult(result):
+
+def check_and_return_result(result):
     if result is None:
         logger.error("There was an error scrapping")
         return "Lo siento, hubo un error"
