@@ -87,8 +87,8 @@ def compose_fnac_text(entry, prev_text, number_of_book):
 
     title_str = title.strip(' \t\n\r')
 
-    text = f'{prev_text} \t {number_of_book} - {title}'
-    if author != None:
+    text = f'{prev_text} \t {number_of_book} - {title_str}'
+    if author is not None:
         author_str = author.getText().strip(' \t\n\r')
         text = f'{text} por {author_str} \n'
     else:
