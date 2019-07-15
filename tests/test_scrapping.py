@@ -11,6 +11,7 @@ books_urls = {}
 with open('./static/book_sources.json') as json_data:
     books_urls = json.load(json_data)
 
+
 class Scrapping(unittest.TestCase):
 
     def test_urls_are_up(self):
@@ -28,9 +29,9 @@ class Scrapping(unittest.TestCase):
         self.assertTrue(title is not None)
 
     def test_Fnac_same_structure(self):
-        entries = self.get_entries(books_urls['Fnac|Más vendidos'], 'li', 'class', 'clearfix Article-item js-ProductList')
+        entries = self.get_entries(books_urls['Fnac|Más vendidos'], 'li', 'class', 'clearfix Article-item js-Search-hashLinkId')
         entry = entries[0]
-        titles = entry.find_all('a', {'class': 'js-minifa-title'}, limit=5)
+        titles = entry.find_all('a', {'class': 'Article-title js-minifa-title js-Search-hashLink'}, limit=5)
         self.assertTrue(len(titles) > 0)
 
     def test_LaCentral_same_structure(self):
