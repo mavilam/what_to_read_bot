@@ -151,7 +151,7 @@ def compose_lcld_text(entry, prev_text, number_of_book):
     else:
         author_raw = entry.div.span
     author = author_raw.getText().strip(' \t\n\r')
-    return f'{prev_text} \t {number_of_book} -{title} por {author.title()}'
+    return f'{prev_text} \t {number_of_book} -{title} por {author.title()} \n'
 
 
 def check_and_return_result(result):
