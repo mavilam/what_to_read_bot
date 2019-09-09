@@ -145,12 +145,16 @@ def scrapping_lcdl_chart(url, init_text):
 
 
 def compose_lcld_text(entry, prev_text, number_of_book):
-    title = entry.a.getText().lower().title()
-    if entry.div.a is not None:
-        author_raw = entry.div.a
+    title_raw = entry.a.getText().lower().title()
+    author_element = entry.find('span', {'class': 'author'})
+
+    if author_element.a is not None:
+        author_raw = author_element.a
     else:
-        author_raw = entry.div.span
+        author_raw = author_element.span
+
     author = author_raw.getText().strip(' \t\n\r')
+    title = title_raw.strip(' \t\n\r')
     return f'{prev_text} \t {number_of_book} -{title} por {author.title()} \n'
 
 
