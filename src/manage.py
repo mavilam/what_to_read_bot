@@ -3,7 +3,8 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from telegram import ReplyKeyboardMarkup, KeyboardButton
 
-import scrappingbooks
+from src import scrappingbooks
+from src import postge_service
 
 import logging
 import os
@@ -16,9 +17,14 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
-types_of_books = ["Más vendidos", "Ficcion y fantasía", "Policiaca/Terror", "Histórica", "Romántica", "Juvenil"]
+types_of_books = ["Más vendidos", "Ficcion y fantasía", "Policiaca/Terror",
+                  "Histórica", "Romántica", "Juvenil"]
 
 defaultKeyboard = [[KeyboardButton(types_of_books[i]), KeyboardButton(types_of_books[i + 1])] for i in range(0, len(types_of_books), 2)]
+defaultKeyboard.append(["Recomendaciones"])
+
+highlights_text = f'{postge_service.get_highlights_text()} \n{postge_service.get_offers_text()}'
+postge_service.close_connection()
 
 
 def get_books_fiction(bot, update):
@@ -62,6 +68,8 @@ def reply_method(bot, update):
     elif query == "🔙":
         result = 'Volvemos a atrás ¿Qué tipo de libros quieres?'
         reply_markup = ReplyKeyboardMarkup(defaultKeyboard)
+    elif query == "Recomendaciones":
+        result = highlights_text
     elif query in types_of_books:
         result = '¿Qué fuente de libros quieres?'
         reply_markup = ReplyKeyboardMarkup(compose_keyboard(query))
@@ -80,10 +88,10 @@ def compose_keyboard(type_of_book):
 
 
 def send_bot_response(bot, update, text, keyboard):
-    if keyboard == None:
-        bot.send_message(chat_id=update.message.chat_id, text=text)
+    if keyboard is None:
+        bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode="HTML")
     else:
-        bot.send_message(chat_id=update.message.chat_id, text=text, reply_markup=keyboard)
+        bot.send_message(chat_id=update.message.chat_id, text=text, reply_markup=keyboard, parse_mode="HTML")
 
 
 def start(bot, update):
@@ -95,11 +103,13 @@ def start(bot, update):
 
 def error(bot, update, errormsg):
     logger.warning('Update "%s" caused error "%s"' % (update, errormsg))
+    text = 'Ups parece que he tenido un error interno 😖'
+    bot.send_message(chat_id=update.message.chat_id, text=text, parse_mode="HTML")
 
 
 def set_up_dispatcher_and_updater(token):
     updater = Updater(token=token)
-    PORT = int(os.environ.get('PORT', '8443'))
+    port = int(os.environ.get('PORT', '8443'))
 
     dispatcher = updater.dispatcher
 
@@ -114,15 +124,11 @@ def set_up_dispatcher_and_updater(token):
     dispatcher.add_handler(nonfiction_handler)
     dispatcher.add_handler(reply_handler)
 
-    # log all errors
     dispatcher.add_error_handler(error)
 
-    updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=token)
+    updater.start_webhook(listen="0.0.0.0", port=port, url_path=token)
     updater.bot.set_webhook("https://whattoreadbot.herokuapp.com/" + token)
 
-    # Block until you press Ctrl-C or the process receives SIGINT, SIGTERM or
-    # SIGABRT. This should be used most of the time, since start_polling() is
-    # non-blocking and will stop the bot gracefully.
     updater.idle()
 
 

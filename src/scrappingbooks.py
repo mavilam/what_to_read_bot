@@ -11,7 +11,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 books_urls = {}
-with open('./static/book_sources.json') as json_data:
+with open('../static/book_sources.json') as json_data:
     books_urls = json.load(json_data)
 
 LIMIT = 5
