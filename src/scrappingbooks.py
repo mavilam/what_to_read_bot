@@ -5,14 +5,20 @@ import requests
 import logging
 import re
 import json
+import os
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 books_urls = {}
-with open('/app/static/book_sources.json') as json_data:
-    books_urls = json.load(json_data)
+if os.path.exists('/app/static/book_sources.json'):
+    with open('/app/static/book_sources.json') as json_data:
+        books_urls = json.load(json_data)
+else:
+    with open('./static/book_sources.json') as json_data:
+        books_urls = json.load(json_data)
+
 
 LIMIT = 5
 
@@ -69,7 +75,7 @@ def scrapping_fnac_chart(url, init_text):
     status_code = req.status_code
     if status_code == 200:
         html = BeautifulSoup(req.text, "html.parser")
-        entries = html.find_all('li', {'class': 'clearfix Article-item js-Search-hashLinkId'}, limit=LIMIT)
+        entries = html.find_all('div', {'class': 'Article-infoContent'}, limit=LIMIT)
         text = init_text
 
         for i, entry in enumerate(entries):
@@ -82,7 +88,7 @@ def scrapping_fnac_chart(url, init_text):
 
 
 def compose_fnac_text(entry, prev_text, number_of_book):
-    title = entry.find('a', {'class': ' Article-title js-minifa-title js-Search-hashLink'}).getText()
+    title = entry.find('p', {'class': 'Article-desc'}).find('a').getText()
     author = entry.find('p', {'class': 'Article-descSub'}).find('a')
 
     title_str = title.strip(' \t\n\r')
