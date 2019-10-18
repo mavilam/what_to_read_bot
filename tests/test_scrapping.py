@@ -29,7 +29,7 @@ class Scrapping(unittest.TestCase):
         self.assertTrue(title is not None)
 
     def test_Fnac_same_structure(self):
-        entries = self.get_entries(books_urls['Fnac|Más vendidos'], 'li', 'class', 'clearfix Article-item js-Search-hashLinkId')
+        entries = self.get_entries(books_urls['Fnac|Más vendidos'], 'div', 'class', 'Article-infoContent')
         entry = entries[0]
         titles = entry.find('p', {'class': 'Article-descSub'}).findAll('a', limit=5)
         self.assertTrue(len(titles) > 0)
