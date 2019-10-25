@@ -75,10 +75,11 @@ def scrapping_fnac_chart(url, init_text):
     status_code = req.status_code
     if status_code == 200:
         html = BeautifulSoup(req.text, "html.parser")
-        entries = html.find_all('div', {'class': 'Article-infoContent'}, limit=LIMIT)
+        entries = html.find_all('div', {'class': 'Article-infoContent'}, limit=(LIMIT + 3))
+        filtered_entries = list(filter(lambda entry: (entry.find('p', {'class': 'Article-desc'}).find('a').getText() != ''), entries))
         text = init_text
 
-        for i, entry in enumerate(entries):
+        for i, entry in enumerate(filtered_entries):
             text = compose_fnac_text(entry, text, str(i + 1))
 
         return text
