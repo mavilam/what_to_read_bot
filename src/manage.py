@@ -3,8 +3,8 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from telegram import ReplyKeyboardMarkup, KeyboardButton
 
-from src import scrappingbooks
-from src import postge_service
+from src.scrap import scrappingbooks
+from src.services import postge_service
 
 import logging
 import os
