@@ -13,7 +13,7 @@ if os.path.exists('/app/static/book_sources.json'):
     with open('/app/static/book_sources.json') as json_data:
         books_urls = json.load(json_data)
 else:
-    with open('../static/book_sources.json') as json_data:
+    with open('./static/book_sources.json') as json_data:
         books_urls = json.load(json_data)
 
 
