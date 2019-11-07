@@ -16,5 +16,11 @@
     "La Central|Policiaca/Terror": "https://www.lacentral.com/materias/?novedades=LGN",
     "La Central|Histórica": "https://www.lacentral.com/materias/?novedades=LGH",
     "La Central|Romántica": "https://www.lacentral.com/materias/?novedades=LGE",
-    "La Central|Juvenil": "https://www.lacentral.com/web/materias/?novedades=UJ"
+    "La Central|Juvenil": "https://www.lacentral.com/web/materias/?novedades=UJ",
+    "Amazon|Más vendidos": "https://www.amazon.es/gp/bestsellers/books/12302824031?ref_=Oct_BSellerC_12302824031_SAll&pf_rd_r=GW94MG27M5FXH4389K0E&pf_rd_p=76dbf253-429d-5071-9602-b0e59a4039a3&pf_rd_s=merchandised-search-8&pf_rd_t=101&pf_rd_i=12302824031&pf_rd_m=A1AT7YVPFBWXBL",
+    "Amazon|Ficcion y fantasía": "https://www.amazon.es/gp/bestsellers/books/1349107031/ref=zg_bs_nav_b_1_b",
+    "Amazon|Policiaca/Terror": "https://www.amazon.es/gp/bestsellers/books/902685031/ref=zg_bs_nav_b_1_b",
+    "Amazon|Histórica": "https://www.amazon.es/gp/bestsellers/books/902600031/ref=zg_bs_nav_b_1_b",
+    "Amazon|Romántica": "https://www.amazon.es/gp/bestsellers/books/902686031/ref=zg_bs_nav_b_1_b",
+    "Amazon|Juvenil": "https://www.amazon.es/gp/bestsellers/books/12942013031/ref=zg_bs_nav_b_1_b"
 }

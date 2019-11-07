@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from bs4 import BeautifulSoup
-import requests
 import logging
-import re
 import json
 import os
 
 from src.scrap.sources import fnac
 from src.scrap.sources import lacasadellibro
 from src.scrap.sources import lacentral
+from src.scrap.sources import amazon
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -35,5 +33,7 @@ def scrap_books(vendor, type):
         return lacasadellibro.result_scrapping(type, books_urls)
     elif vendor == "La Central":
         return lacentral.result_scrapping(type, books_urls)
+    elif vendor == "Amazon":
+        return amazon.result_scrapping(type, books_urls)
 
     return f'{prev_text} \t {number_of_book} -{title} por {author.title()} \n'
