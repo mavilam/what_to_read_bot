@@ -43,8 +43,10 @@ def compose_text(entry, prev_text, number_of_book):
 
     if author_element.a is not None:
         author_raw = author_element.a
-    else:
+    elif author_element.a is not None:
         author_raw = author_element.span
+    else:
+        author_raw = ''
 
     author = author_raw.getText().strip(' \t\n\r')
     title = title_raw.strip(' \t\n\r')
