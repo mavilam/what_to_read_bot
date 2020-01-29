@@ -39,7 +39,7 @@ def scrapping_chart(url, init_text):
 
 def compose_text(entry, prev_text, number_of_book):
     title_raw = entry.a.getText().lower().title()
-    author_element = entry.find('span', {'class': 'author'})
+    author_element = entry.find('div', {'class': 'author'})
 
     if author_element.a is not None:
         author_raw = author_element.a
