@@ -23,10 +23,14 @@ def get_offers_text():
     cur = conn.cursor()
     cur.execute("select * from whattoread.highlights where isoffer = true;")
     rows = cur.fetchall()
-    text = 'Además te dejo unos enlaces que creo que te pueden interesar: \n'
+    text = ''
     for row in rows:
         text = f'{text}<a href="{row[2]}">{row[1]}</a>: {row[3]}'
-    return text
+
+    if text != '':
+        return f'Además te dejo unos enlaces que creo que te pueden interesar: \n{text}'
+    else:
+        return ''
 
 
 def close_connection():
