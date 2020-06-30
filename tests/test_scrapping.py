@@ -27,10 +27,10 @@ class Scrapping(unittest.TestCase):
             self.assertEqual(http_code, 200)
 
     def test_laCasaDelLibro_same_structure(self):
-        entries = self.get_entries(books_urls['Casa del libro|Juvenil'], 'html.parser', 'div', 'class', 'product__info')
+        entries = self.get_entries(books_urls['Casa del libro|Juvenil'], 'html.parser', 'div', 'class', 'col-lg-10 col-9')
         self.assertTrue(len(entries) > 0)
         entry = entries[0]
-        title = entry.a
+        title = entry.find('a', {'class': 'title'})
         self.assertTrue(title is not None)
 
     def test_Fnac_same_structure(self):

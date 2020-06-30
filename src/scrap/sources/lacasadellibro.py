@@ -27,7 +27,7 @@ def scrapping_chart(url, init_text):
 
     html = BeautifulSoup(result, "html.parser")
 
-    entries = html.find_all('div', {'class': 'product__info'}, limit=LIMIT)
+    entries = html.find_all('div', {'class': 'col-lg-10 col-9'}, limit=LIMIT)
 
     text = init_text
 
@@ -38,16 +38,16 @@ def scrapping_chart(url, init_text):
 
 
 def compose_text(entry, prev_text, number_of_book):
-    title_raw = entry.a.getText().lower().title()
-    author_element = entry.find('div', {'class': 'author'})
+    title_raw = entry.find('a', {'class': 'title'})
+    author_element = entry.find('div', {'class': 'col col-12'})
 
     if author_element.a is not None:
         author_raw = author_element.a
-    elif author_element.a is not None:
+    elif author_element.span is not None:
         author_raw = author_element.span
     else:
         author_raw = ''
 
-    author = author_raw.getText().strip(' \t\n\r')
-    title = title_raw.strip(' \t\n\r')
+    author = author_raw.getText().strip(' \t\n\r').capitalize()
+    title = title_raw.getText().strip(' \t\n\r').capitalize()
     return f'{prev_text} \t {number_of_book} - {title} por {author.title()} \n'
