@@ -39,7 +39,7 @@ def scrapping_chart(url, init_text):
 
 
 def compose_text(entry, prev_text, number_of_book):
-    title_raw = entry.find('div', {'class': 'p13n-sc-truncate p13n-sc-line-clamp-1 p13n-sc-truncate-mobile-type'}).getText()
+    title_raw = entry.find('img').get('alt')
     author = entry.find('span', {'class': 'a-size-small a-color-base'})
     if author is None:
         author = entry.find('a', {'class': 'a-size-small a-link-child'})

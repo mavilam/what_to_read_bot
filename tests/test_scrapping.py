@@ -48,7 +48,7 @@ class Scrapping(unittest.TestCase):
     def test_Amazon_same_structure(self):
         entries = self.get_entries(books_urls['Amazon|Más vendidos'], 'html5lib', 'span', 'class', 'aok-inline-block zg-item')
         entry = entries[0]
-        title = entry.find_all('div', {'class': 'p13n-sc-truncate p13n-sc-line-clamp-1 p13n-sc-truncate-mobile-type'}, limit=5)
+        title = entry.find('img').get('alt')
         author = entry.find('span', {'class': 'a-size-small a-color-base'})
         self.assertTrue(title is not None)
         self.assertTrue(author is not None)
