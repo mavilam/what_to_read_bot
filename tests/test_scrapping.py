@@ -13,7 +13,7 @@ if os.path.exists('/app/static/book_sources.json'):
     with open('/app/static/book_sources.json') as json_data:
         books_urls = json.load(json_data)
 else:
-    with open('./static/book_sources.json') as json_data:
+    with open('../static/book_sources.json') as json_data:
         books_urls = json.load(json_data)
 
 
@@ -48,8 +48,10 @@ class Scrapping(unittest.TestCase):
     def test_Amazon_same_structure(self):
         entries = self.get_entries(books_urls['Amazon|Más vendidos'], 'html5lib', 'span', 'class', 'aok-inline-block zg-item')
         entry = entries[0]
-        titles = entry.find_all('div', {'class': 'p13n-sc-truncate p13n-sc-line-clamp-1'}, limit=5)
-        self.assertTrue(len(titles) > 0)
+        title = entry.find_all('div', {'class': 'p13n-sc-truncate p13n-sc-line-clamp-1 p13n-sc-truncate-mobile-type'}, limit=5)
+        author = entry.find('span', {'class': 'a-size-small a-color-base'})
+        self.assertTrue(title is not None)
+        self.assertTrue(author is not None)
 
     @staticmethod
     def request_url(url):
@@ -65,7 +67,7 @@ class Scrapping(unittest.TestCase):
         status_code = req.status_code
         if status_code == 200:
             html = BeautifulSoup(req.text, parser)
-            entries = html.find_all(father_struct, {struct: class_name})
+            entries = html.find_all(father_struct, {struct: class_name}, limit=5)
             return entries
         else:
             return []
