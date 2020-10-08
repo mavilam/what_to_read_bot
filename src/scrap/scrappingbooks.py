@@ -18,7 +18,7 @@ if os.path.exists('/app/static/book_sources.json'):
     with open('/app/static/book_sources.json') as json_data:
         books_urls = json.load(json_data)
 else:
-    with open('./static/book_sources.json') as json_data:
+    with open(f'{os.path.dirname(os.path.abspath(__file__))}/book_sources.json') as json_data:
         books_urls = json.load(json_data)
 
 logger = logging.getLogger(__name__)

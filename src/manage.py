@@ -9,6 +9,7 @@ from src.services import postge_service
 import logging
 import os
 
+webhook_base_url = 'https://whattoreadbot.herokuapp.com/'
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -128,7 +129,7 @@ def set_up_dispatcher_and_updater(token):
     dispatcher.add_error_handler(error)
 
     updater.start_webhook(listen="0.0.0.0", port=port, url_path=token)
-    updater.bot.set_webhook("https://whattoreadbot.herokuapp.com/" + token)
+    updater.bot.set_webhook(f'{webhook_base_url}{token}')
 
     updater.idle()
 
