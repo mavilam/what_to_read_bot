@@ -1,5 +1,7 @@
 # what_to_read_bot [![Build Status](https://travis-ci.org/mavilam/what_to_read_bot.svg?branch=master)](https://travis-ci.org/mavilam/what_to_read_bot)
-Bot para recomendar los libros más leídos de cada semana en distintas plataformas de venta de libros
+Bot para recomendar los libros más leídos de cada semana en distintas plataformas de venta de libros.
+
+Pruébalo en [Telegram](https://telegram.me/what_to_read_bot)
 
 ## Funcionamiento
 El bot consiste en un servicio web que se nutre de las webs de Fnac, Amazon, La casa del libro y La central para recoger los libros más leídos. Cada llamada scrappea la web de la tienda seleccionada y muestra los resultados.
