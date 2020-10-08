@@ -4,10 +4,10 @@ import logging
 import json
 import os
 
-from src.scrap.sources import fnac
-from src.scrap.sources import lacasadellibro
-from src.scrap.sources import lacentral
-from src.scrap.sources import amazon
+from scrap.sources import fnac
+from scrap.sources import lacasadellibro
+from scrap.sources import lacentral
+from scrap.sources import amazon
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

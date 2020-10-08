@@ -3,7 +3,7 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from telegram import ReplyKeyboardMarkup, KeyboardButton
 
-from src.scrap import scrappingbooks
+from scrap import scrappingbooks
 
 import logging
 import os
