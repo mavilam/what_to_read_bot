@@ -4,7 +4,6 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 from telegram import ReplyKeyboardMarkup, KeyboardButton
 
 from src.scrap import scrappingbooks
-from src.services import postge_service
 
 import logging
 import os
@@ -22,10 +21,6 @@ types_of_books = ["Más vendidos", "Ficcion y fantasía", "Policiaca/Terror",
                   "Histórica", "Romántica", "Juvenil"]
 
 defaultKeyboard = [[KeyboardButton(types_of_books[i]), KeyboardButton(types_of_books[i + 1])] for i in range(0, len(types_of_books), 2)]
-defaultKeyboard.append(["Recomendaciones"])
-
-highlights_text = f'{postge_service.get_highlights_text()} \n{postge_service.get_offers_text()}'
-postge_service.close_connection()
 
 
 def get_books_fiction(bot, update):
@@ -69,8 +64,6 @@ def reply_method(bot, update):
     elif query == "🔙":
         result = 'Volvemos a atrás ¿Qué tipo de libros quieres?'
         reply_markup = ReplyKeyboardMarkup(defaultKeyboard)
-    elif query == "Recomendaciones":
-        result = highlights_text
     elif query in types_of_books:
         result = '¿Qué fuente de libros quieres?'
         reply_markup = ReplyKeyboardMarkup(compose_keyboard(query))
