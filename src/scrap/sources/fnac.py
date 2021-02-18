@@ -3,13 +3,13 @@
 from bs4 import BeautifulSoup
 import logging
 
-from utils import http_utils
-from utils import response_utils
+from src.utils import http_utils
+from src.utils import response_utils
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
-LIMIT = 8
+LIMIT = 5
 
 
 def result_scrapping(type_of_book, books_urls):
@@ -27,8 +27,8 @@ def scrapping_chart(url, init_text):
         return "Ha ocurrido un error, inténtalo más tarde"
 
     html = BeautifulSoup(result, "html.parser")
-    entries = html.find_all('div', {'class': 'Article-infoContent'}, limit=(LIMIT + 3))
-    filtered_entries = list(filter(lambda entry: (entry.find('p', {'class': 'Article-desc'}).find('a').getText() != ''), entries))
+    entries = html.find_all('article', {'class': 'Article-itemGroup'}, limit=(LIMIT + 3))
+    filtered_entries = list(filter(lambda entry: (entry.find('div', {'class': 'Article-infoContent'}).find('a').getText() != ''), entries))
     text = init_text
 
     for i, entry in enumerate(filtered_entries):

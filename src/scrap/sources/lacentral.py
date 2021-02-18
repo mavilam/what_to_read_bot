@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup
 import logging
 import re
 
-from utils import http_utils
-from utils import response_utils
+from src.utils import http_utils
+from src.utils import response_utils
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
