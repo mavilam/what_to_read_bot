@@ -13,7 +13,7 @@ Si quieres saber como registrar tu bot en telegram, echa un vistazo a este [enla
 Antes de nada es necesario instalar las dependencias
 ```bash
 cd what_to_read_bot
-pip install requirements
+pip install -r requirements
 ````
 
 Una vez instaladas las dependencias, es necesario añadir una variable de entorno con el nombre *TELEGRAM_TOKEN* con el token de tu bot de telegram. Opcionalmente se puede añadir la variable *PORT* para indicar el puerto donde va a ejecutar el servicio, por defecto se ejecuta en el 8443.
