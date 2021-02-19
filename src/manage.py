@@ -90,14 +90,10 @@ def set_up_dispatcher_and_updater(token):
     dispatcher = updater.dispatcher
 
     start_handler = CommandHandler("start", start)
-    fiction_handler = CommandHandler("getbooksfiction", get_books_fiction)
-    nonfiction_handler = CommandHandler("getbooksnonfiction", get_books_nonfiction)
     reply_handler = MessageHandler(Filters.text, reply_method)
 
     dispatcher.add_handler(CallbackQueryHandler(reply_method))
     dispatcher.add_handler(start_handler)
-    dispatcher.add_handler(fiction_handler)
-    dispatcher.add_handler(nonfiction_handler)
     dispatcher.add_handler(reply_handler)
 
     dispatcher.add_error_handler(error)
