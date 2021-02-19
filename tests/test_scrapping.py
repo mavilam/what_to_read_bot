@@ -34,9 +34,9 @@ class Scrapping(unittest.TestCase):
         self.assertTrue(title is not None)
 
     def test_Fnac_same_structure(self):
-        entries = self.get_entries(books_urls['Fnac|Más vendidos'], 'html.parser', 'div', 'class', 'Article-infoContent')
+        entries = self.get_entries(books_urls['Fnac|Más vendidos'], 'html.parser', 'article', 'class', 'Article-itemGroup')
         entry = entries[0]
-        titles = entry.find('p', {'class': 'Article-descSub'}).findAll('a', limit=5)
+        titles = entry.find('div', {'class': 'Article-infoContent'}).findAll('a', limit=5)
         self.assertTrue(len(titles) > 0)
 
     def test_LaCentral_same_structure(self):
