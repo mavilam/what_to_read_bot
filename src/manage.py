@@ -23,25 +23,6 @@ types_of_books = ["Más vendidos", "Ficcion y fantasía", "Policiaca/Terror",
 defaultKeyboard = [[KeyboardButton(types_of_books[i]), KeyboardButton(types_of_books[i + 1])] for i in range(0, len(types_of_books), 2)]
 
 
-def get_books_fiction(bot, update):
-    logger.info("Books fiction request")
-
-    tag = "ficcion"
-    scrappingbooks.result_scrapping_fnac(tag)
-    scrappingbooks.result_scrapping_lcdl(tag)
-
-
-def get_books_nonfiction(bot, update):
-    logger.info("Books non fiction request")
-
-    global url_nonfiction
-
-    tag = "no ficcion"
-    global url_lcdl
-    scrappingbooks.result_scrapping_fnac(tag)
-    scrappingbooks.result_scrapping_lcdl(tag)
-
-
 def get_user_info(update):
     username = update.message.from_user.username
     if username is None:
