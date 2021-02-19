@@ -18,14 +18,7 @@ else:
 
 
 class Scrapping(unittest.TestCase):
-
-    def test_urls_are_up(self):
-        for key, value in books_urls.items():
-            http_code = self.request_url(value)
-            if http_code != 200:
-                print(value)
-            self.assertEqual(http_code, 200)
-
+    
     def test_laCasaDelLibro_same_structure(self):
         entries = self.get_entries(books_urls['Casa del libro|Juvenil'], 'html.parser', 'div', 'class', 'col-lg-10 col-9')
         self.assertTrue(len(entries) > 0)
